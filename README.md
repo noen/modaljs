@@ -1,2 +1,2 @@
-# modaljs
-Dynamic modal dialog written in vanilla JavaScript.
+# Modal JS
+Dynamic lightweight modal dialog written in vanilla JavaScript.
