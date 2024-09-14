@@ -5,7 +5,7 @@
  * @copyright	Copyright (c) ecto.lt
  * @author		Benas Valančius <benas@ecto.lt>
  * @url			https://ecto.lt
- * @version		0.1.0
+ * @version		0.1.1
  */
 
 class Modal
@@ -23,15 +23,19 @@ class Modal
 		id : false,
 		title : '',
 		html : '',
-		width: 800,
+		width: false,
+		addClass : '',
 		replace : false, // close open modal (keeps overlay open on change)
-		tplClose : '<button type="button" class="btn-close ui-modal-close"><i class="fa-regular fa-xmark"></i></button>',
+		tplClose : '<button type="button" class="btn-close ui-modal-close"><i></i></button>',
 		callback : false,
 		afterClose : false,
 	}
 
 	constructor(opt)
 	{
+		if(typeof(opt) === 'string')
+			opt = {html:opt};
+
 		this.opt = {...this.opt, ...opt};
 
 		if(!this.opt.id)
@@ -45,6 +49,9 @@ class Modal
 			});
 			window.modalEscapeEventSet = 1;
 		}
+
+		if(typeof(this.opt.footer) !== 'undefined')
+			alert('footer');
 
 		this.open();
 	}
@@ -60,10 +67,17 @@ class Modal
 
 		this.opt.zindex = window.global_zindex;
 
-		let w = this.opt.width;
+		let s = `z-index:${this.opt.zindex};`;
 
-		if(this.opt.width.toString().indexOf('%') === -1 && this.opt.width.toString().indexOf('em') === -1)
-			w = w + 'px';
+		if(this.opt.width)
+		{
+			let w = this.opt.width;
+
+			if(this.opt.width.toString().indexOf('%') === -1 && this.opt.width.toString().indexOf('em') === -1 && this.opt.width.toString().indexOf('rem') === -1)
+				w = w + 'px';
+
+			s += `--bs-modal-width:${w};`;
+		}
 
 		const header = (
 			this.opt.title === ''
@@ -76,9 +90,7 @@ class Modal
 			</div>`
 		);
 
-		const html = `<div class="modal ui-modal fade" tabindex="-1" id="${this.opt.id}" 
-	style="--bs-modal-width:${w};z-index:${this.opt.zindex}" 
-	aria-modal="true">
+		const html = `<div class="modal ui-modal ${this.opt.addClass} fade" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true">
 <div class="modal-dialog modal-dialog-centered">
 	<div class="modal-content">
 		${header}
@@ -102,11 +114,16 @@ class Modal
 
 		this.obj = document.getElementById(this.opt.id);
 
-		this.obj.querySelectorAll('.ui-modal-close').forEach(i => {
-			i.addEventListener('click', (event) => {
-				this.close();
+		const oc = this.obj.querySelectorAll('.ui-modal-close');
+
+		if(oc)
+		{
+			oc.forEach(i => {
+				i.addEventListener('click', (event) => {
+					this.close();
+				});
 			});
-		});
+		}
 
 		this.obj.addEventListener('modal.show', (event) => {
 			this.show();
@@ -188,7 +205,8 @@ class Modal
 		this.obj.classList.add('show');
 		this.overlay();
 
-		$.modal.hideLoading();
+		if(typeof(fw) !== 'undefined')
+			fw.loading.hide();
 	}
 
 	hide()

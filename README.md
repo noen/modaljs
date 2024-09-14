@@ -3,7 +3,7 @@ Dynamic lightweight modal dialog written in vanilla JavaScript.
 
 Do you like Bootstrap modals? But would like to create them dynamicly? Multilevel?
 
-
+View live [DEMO](https://aitija.lt/modaljs/index.html).
 
 ## Style
 
@@ -16,12 +16,16 @@ I like sticky header and footer feel free to remove them if you don't need it.
 	--bs-backdrop-opacity: 1;
 	background: rgba(255, 255, 255, .25);
 	backdrop-filter: blur(2px);
+	display: none !important;
 }
 .modal-header {
 	background-color: rgba(249, 250, 253, 1) !important;
 	border: 0;
 	padding: 0;
-	position: relative;
+	position: sticky;
+	top: 0;
+	background-color: inherit;
+	z-index: 10;
 }
 .modal-header .modal-title {
 	padding: var(--bs-modal-header-padding);
@@ -36,6 +40,11 @@ I like sticky header and footer feel free to remove them if you don't need it.
 }
 .modal-footer {
 	justify-content: flex-start;
+	position: sticky;
+	bottom: 0;
+	z-index: 10;
+	margin: 0 -1rem -1rem;
+	background-color: #fff;
 }
 .modal-header .btn-close {
 	font-size: 1.5rem;
@@ -50,26 +59,19 @@ I like sticky header and footer feel free to remove them if you don't need it.
 	top: 0.75em;
 	box-shadow: none;
 }
+.modal-header .btn-close i {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzODQgNTEyIj48cGF0aCBkPSJNMzQ1IDEzN2M5LjQtOS40IDkuNC0yNC42IDAtMzMuOXMtMjQuNi05LjQtMzMuOSAwbC0xMTkgMTE5TDczIDEwM2MtOS40LTkuNC0yNC42LTkuNC0zMy45IDBzLTkuNCAyNC42IDAgMzMuOWwxMTkgMTE5TDM5IDM3NWMtOS40IDkuNC05LjQgMjQuNiAwIDMzLjlzMjQuNiA5LjQgMzMuOSAwbDExOS0xMTlMMzExIDQwOWM5LjQgOS40IDI0LjYgOS40IDMzLjkgMHM5LjQtMjQuNiAwLTMzLjlsLTExOS0xMTlMMzQ1IDEzN3oiLz48L3N2Zz4=);
+	background-size: contain;
+	background-position: center top;
+	background-repeat: no-repeat;
+	display: block;
+	width: 1em;
+	height: 1em;
+}
 .modal-header .btn-close:hover,
 .modal-header .btn-close:focus {
 	opacity: 1 !important;
 	background-color: #eee;
-}
-.modal-sticky .modal-header {
-	position: sticky;
-	top: 0;
-	background-color: inherit;
-	z-index: 10;
-}
-.modal-body .modal-footer {
-	margin: 0 -1rem -1rem;
-	background-color: #fff;
-}
-.modal-sticky .modal-footer {
-	position: sticky;
-	bottom: 0;
-	background-color: inherit;
-	z-index: 10;
 }
 div.modal-backdrop ~ div.modal ~ div.modal-backdrop {
 	display: none;
@@ -77,9 +79,6 @@ div.modal-backdrop ~ div.modal ~ div.modal-backdrop {
 #ui-modal-loading .spinner-border {
 	outline: 1rem solid rgba(255, 255, 255, .5);
 	background: rgba(255, 255, 255, .5);
-}
-.modal-backdrop {
-	display: none !important;
 }
 #ui-modal-overlay {
 	position:fixed;
@@ -100,7 +99,7 @@ div.modal-backdrop ~ div.modal ~ div.modal-backdrop {
 .ui-modal .modal-header {
 	padding: .75rem 1rem;
 }
-.ui-modal .ui-modal-close {
+.ui-modal .modal-header .ui-modal-close {
 	position: static;
 	margin: 0;
 }
@@ -110,7 +109,7 @@ div.modal-backdrop ~ div.modal ~ div.modal-backdrop {
 .ui-modal .no-title {
 	padding: 0;
 }
-.ui-modal .no-title .ui-modal-close {
+.ui-modal .modal-header.no-title .ui-modal-close {
 	position: absolute;
 	top: 1rem;
 	right: 1rem;
