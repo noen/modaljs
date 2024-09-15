@@ -50,7 +50,7 @@
 	background-size: contain;
 	background-position: center top;
 	background-repeat: no-repeat;
-	display: block;
+	display: inline-block;
 	width: 1em;
 	height: 1em;
 }
