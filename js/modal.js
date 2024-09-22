@@ -204,9 +204,6 @@ class Modal
 
 		this.obj.classList.add('show');
 		this.overlay();
-
-		if(typeof(fw) !== 'undefined')
-			fw.loading.hide();
 	}
 
 	hide()
