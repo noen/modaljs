@@ -5,7 +5,7 @@
  * @copyright	Copyright (c) ecto.lt
  * @author		Benas Valančius <benas@ecto.lt>
  * @url			https://ecto.lt
- * @version		0.1.1
+ * @version		0.1.3
  */
 
 class Modal
@@ -45,7 +45,7 @@ class Modal
 		{
 			document.addEventListener('keydown', (event)=> {
 				if(event.key === 'Escape')
-					ModalClose()
+					ModalClose();
 			});
 			window.modalEscapeEventSet = 1;
 		}
@@ -82,22 +82,10 @@ class Modal
 		const header = (
 			this.opt.title === ''
 			? `<div class="modal-header no-title">${this.opt.tplClose}</div>`
-			: `<div class="modal-header row g-0 align-items-center">
-				<div class="col">
-					<div class="modal-title">${this.opt.title}</div>
-				</div>
-				<div class="col-auto">${this.opt.tplClose}</div>
-			</div>`
+			: `<div class="modal-header row g-0 align-items-center"><div class="col"><div class="modal-title">${this.opt.title}</div></div><div class="col-auto">${this.opt.tplClose}</div></div>`
 		);
 
-		const html = `<div class="modal ui-modal ${this.opt.addClass} fade" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true">
-<div class="modal-dialog modal-dialog-centered">
-	<div class="modal-content">
-		${header}
-		<div class="modal-body">${this.opt.html}</div>
-	</div>
-</div>
-</div>`;
+		const html = `<div class="modal ui-modal ${this.opt.addClass} fade" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">${header}<div class="modal-body"></div></div></div></div>`;
 
 		let old = document.getElementById(this.opt.id);
 
@@ -107,23 +95,12 @@ class Modal
 			old.dispatchEvent(new Event('modal.remove'));
 		}
 
-		//document.body.insertAdjacentHTML('beforeend', html);
+		document.body.insertAdjacentHTML('beforeend', html);
 		// we need this method for script to work
-		const node = document.createRange().createContextualFragment(html);
-		document.body.append(node);
+		//const node = document.createRange().createContextualFragment(html);
+		//document.body.append(node);
 
 		this.obj = document.getElementById(this.opt.id);
-
-		const oc = this.obj.querySelectorAll('.ui-modal-close');
-
-		if(oc)
-		{
-			oc.forEach(i => {
-				i.addEventListener('click', (event) => {
-					this.close();
-				});
-			});
-		}
 
 		this.obj.addEventListener('modal.show', (event) => {
 			this.show();
@@ -151,13 +128,27 @@ class Modal
 		}
 
 		setTimeout((modal) => {
+				const node = document.createRange().createContextualFragment(modal.opt.html);
+				modal.obj.querySelector('.modal-body').append(node);
+
+				const oc = modal.obj.querySelectorAll('.ui-modal-close');
+
+				if(oc)
+				{
+					oc.forEach(i => {
+						i.addEventListener('click', (event) => {
+							modal.close();
+						});
+					});
+				}
+
 				modal.obj.dispatchEvent(new Event('modal.show'));
 
 				// TODO: reikia sito?
 				if(typeof(project) !== 'undefined' && typeof(project.cfg_modal_callback) !== 'undefined')
 					project.cfg_modal_callback();
 
-				this._call(modal.opt.callback);
+				modal._call(modal.opt.callback);
 			},
 			1,
 			this);
@@ -204,6 +195,9 @@ class Modal
 
 		this.obj.classList.add('show');
 		this.overlay();
+
+		if(typeof(fw) !== 'undefined')
+			fw.loading.hide();
 	}
 
 	hide()
