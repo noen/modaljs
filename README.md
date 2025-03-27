@@ -167,9 +167,10 @@ new Modal({
 | ---- | ---- | ------- | ----------- |
 | title | string | null | Modal title [optional] |
 | html | string | null | Modal HTML. |
-| id | string | null | Modal ID will relpace other with same ID. |
-| width | string | null | Modal width in px, Modal acceps and other values like '20rem' or '50%'. |
-| addClass | string | null | If you need additional styling for this dialog you can add css class to it. |
+| id | string | null | Modal ID will relpace other with same ID. [optional] |
+| width | string | null | Modal width in px, Modal acceps and other values like '20rem' or '50%'. [optional] |
+| addClass | string | null | If you need additional styling for this dialog you can add css class to it. [optional] |
+| pos | string | center | Modal possition (top, center). [optional] |
 
 ## Events
 

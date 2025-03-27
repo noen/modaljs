@@ -5,7 +5,7 @@
  * @copyright	Copyright (c) ecto.lt
  * @author		Benas Valančius <benas@ecto.lt>
  * @url			https://ecto.lt
- * @version		0.1.3
+ * @version		0.1.5
  */
 
 class Modal
@@ -27,13 +27,14 @@ class Modal
 		addClass : '',
 		replace : false, // close open modal (keeps overlay open on change)
 		tplClose : '<button type="button" class="btn-close ui-modal-close"><i></i></button>',
+		pos : 'center',
 		callback : false,
 		afterClose : false,
 	}
 
 	constructor(opt)
 	{
-		if(typeof(opt) === 'string')
+		if(typeof opt === 'string')
 			opt = {html:opt};
 
 		this.opt = {...this.opt, ...opt};
@@ -41,16 +42,16 @@ class Modal
 		if(!this.opt.id)
 			this.opt.id = `ui_modal_${this._randomId()}`;
 
-		if(typeof(window.modalEscapeEventSet) === 'undefined')
+		if(typeof window.modalEscapeEventSet === 'undefined')
 		{
-			document.addEventListener('keydown', (event)=> {
+			document.addEventListener('keydown', (event) => {
 				if(event.key === 'Escape')
 					ModalClose();
 			});
 			window.modalEscapeEventSet = 1;
 		}
 
-		if(typeof(this.opt.footer) !== 'undefined')
+		if(typeof this.opt.footer !== 'undefined')
 			alert('footer');
 
 		this.open();
@@ -58,7 +59,7 @@ class Modal
 
 	open()
 	{
-		if(typeof(window.global_zindex) === 'undefined')
+		if(typeof window.global_zindex === 'undefined')
 			window.global_zindex = 2000;
 
 		// increase by 2 (1 for modal, 2 for overlay)
@@ -68,6 +69,10 @@ class Modal
 		this.opt.zindex = window.global_zindex;
 
 		let s = `z-index:${this.opt.zindex};`;
+		let posClass = '';
+
+		if(this.opt.pos === 'center')
+			posClass = 'modal-dialog-centered';
 
 		if(this.opt.width)
 		{
@@ -85,7 +90,7 @@ class Modal
 			: `<div class="modal-header row g-0 align-items-center"><div class="col"><div class="modal-title">${this.opt.title}</div></div><div class="col-auto">${this.opt.tplClose}</div></div>`
 		);
 
-		const html = `<div class="modal ui-modal ${this.opt.addClass} fade" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content">${header}<div class="modal-body"></div></div></div></div>`;
+		const html = `<div class="modal ui-modal ${this.opt.addClass} fade" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true"><div class="modal-dialog ${posClass}"><div class="modal-content">${header}<div class="modal-body"></div></div></div></div>`;
 
 		let old = document.getElementById(this.opt.id);
 
@@ -145,7 +150,7 @@ class Modal
 				modal.obj.dispatchEvent(new Event('modal.show'));
 
 				// TODO: reikia sito?
-				if(typeof(project) !== 'undefined' && typeof(project.cfg_modal_callback) !== 'undefined')
+				if(typeof project !== 'undefined' && typeof project.cfg_modal_callback !== 'undefined')
 					project.cfg_modal_callback();
 
 				modal._call(modal.opt.callback);
@@ -160,15 +165,19 @@ class Modal
 		// this.ol
 		let ol = document.getElementById('ui-modal-overlay');
 
+		if(typeof window.modalOverlayTimer !== 'undefined')
+			clearTimeout(window.modalOverlayTimer);
+
 		if(ol)
 		{
 			ol.style.zIndex = zindex;
+			ol.classList.remove('d-none');
+			ol.classList.add('show');
 		}
 		else
 		{
 			ol = `<div id="ui-modal-overlay" class="fade" style="z-index:${zindex}" />`;
 			document.body.insertAdjacentHTML('beforeend', ol);
-
 			document.getElementById('ui-modal-overlay').classList.add('show');
 		}
 	}
@@ -181,8 +190,9 @@ class Modal
 		document.body.style.width = 'auto';
 		document.body.classList.remove('overflow-hidden');
 
-		setTimeout((modal) => {
-				ol.remove();
+		window.modalOverlayTimer = setTimeout((modal) => {
+				//ol.remove();
+				ol.classList.add('d-none');
 			},
 			this.timeout,
 			this);
@@ -196,7 +206,7 @@ class Modal
 		this.obj.classList.add('show');
 		this.overlay();
 
-		if(typeof(fw) !== 'undefined')
+		if(typeof fw !== 'undefined')
 			fw.loading.hide();
 	}
 
@@ -242,7 +252,7 @@ class Modal
 		if(!f)
 			return;
 
-		if(typeof(f) === 'string')
+		if(typeof f === 'string')
 			eval(f);
 		else
 			f(this);
@@ -267,7 +277,7 @@ class Modal
 
 function ModalClose(el)
 {
-	if(typeof(el) === 'undefined')
+	if(typeof el === 'undefined')
 	{
 		const e = document.querySelectorAll('.ui-modal.show');
 
