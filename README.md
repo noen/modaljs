@@ -133,6 +133,10 @@ myModal.close();
 // OR
 
 ModalClose(); // will close active modal
+
+// OR
+
+ModalCloseAll(); // will close all modals
 ````
 
 

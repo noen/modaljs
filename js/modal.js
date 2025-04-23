@@ -5,7 +5,7 @@
  * @copyright	Copyright (c) ecto.lt
  * @author		Benas Valančius <benas@ecto.lt>
  * @url			https://ecto.lt
- * @version		0.1.5
+ * @version		0.1.6
  */
 
 class Modal
@@ -90,7 +90,7 @@ class Modal
 			: `<div class="modal-header row g-0 align-items-center"><div class="col"><div class="modal-title">${this.opt.title}</div></div><div class="col-auto">${this.opt.tplClose}</div></div>`
 		);
 
-		const html = `<div class="modal ui-modal ${this.opt.addClass} fade" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true"><div class="modal-dialog ${posClass}"><div class="modal-content">${header}<div class="modal-body"></div></div></div></div>`;
+		const html = `<div class="modal ui-modal ${this.opt.addClass} fade active" tabindex="-1" id="${this.opt.id}" style="${s}" aria-modal="true"><div class="modal-dialog ${posClass}"><div class="modal-content">${header}<div class="modal-body"></div></div></div></div>`;
 
 		let old = document.getElementById(this.opt.id);
 
@@ -218,6 +218,7 @@ class Modal
 
 	remove()
 	{
+		this.obj.classList.remove('active');
 		this.obj.classList.add('overflow-hidden');
 		this.hide();
 
@@ -291,4 +292,16 @@ function ModalClose(el)
 		el = el.closest('.ui-modal');
 
 	el.dispatchEvent(new Event('modal.close'));
+}
+
+function ModalCloseAll()
+{
+	const e = document.querySelectorAll('.ui-modal.show');
+
+	if(e.length < 1)
+		return;
+
+	e.forEach(i => {
+		ModalClose(i);
+	})
 }
